@@ -1,27 +1,132 @@
-<h2>Data Categories</h2>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Categories</title>
 
-<a href="/categories/create">+ Tambah Category</a>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>No</th>
-        <th>Nama</th>
-        <th>Aksi</th>
-    </tr>
+        .container {
+            width: 700px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-    @foreach($categories as $cat)
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $cat->nama_kategori }}</td>
-        <td>
-            <a href="/categories/{{ $cat->id }}/edit">Edit</a>
+        h2 {
+            margin-bottom: 15px;
+        }
 
-            <form action="/categories/{{ $cat->id }}" method="POST" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Hapus</button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
+        .btn-add {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 14px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-add:hover {
+            background: #1e40af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #e5e7eb;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tbody tr:hover {
+            background: #eef2ff;
+        }
+
+        .aksi a,
+        .aksi button {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+        }
+
+        .btn-hapus {
+            background: #dc2626;
+        }
+
+        .aksi form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📂 Data Categories</h2>
+
+    <a href="/categories/create" class="btn-add">
+        + Tambah Category
+    </a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Kategori</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        @foreach($categories as $cat)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $cat->nama_kategori }}</td>
+                <td class="aksi">
+                    <a href="/categories/{{ $cat->id }}/edit" class="btn-edit">
+                        Edit
+                    </a>
+
+                    <form action="/categories/{{ $cat->id }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                class="btn-hapus"
+                                onclick="return confirm('Yakin mau hapus kategori ini?')">
+                            Hapus
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

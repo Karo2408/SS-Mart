@@ -1,41 +1,110 @@
-<h2>Edit Alamat</h2>
+<h2 style="text-align:center; margin-bottom:25px;">✏️ Edit Alamat</h2>
 
-<form action="/addresses/{{ $address->id }}" method="POST">
-    @csrf
-    @method('PUT')
+<style>
+    .address-page {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
 
-    <input type="text" name="label" value="{{ $address->label }}" required>
-    <input type="text" name="recipient_name" value="{{ $address->recipient_name }}" required>
-    <input type="text" name="phone_number" value="{{ $address->phone_number }}" required>
-    <textarea name="address_detail" required>{{ $address->address_detail }}</textarea>
+    .address-edit-wrapper {
+        width: 100%;
+        max-width: 720px;
+        background: #ffffff;
+        padding: 24px;
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
 
-    {{-- PROVINSI --}}
-    <select name="province_id" id="province" required>
-        @foreach ($provinces as $province)
-            <option value="{{ $province->code }}"
-                {{ $province->code == $address->province_id ? 'selected' : '' }}>
-                {{ $province->name }}
-            </option>
-        @endforeach
-    </select>
+    .address-edit-wrapper input,
+    .address-edit-wrapper textarea,
+    .address-edit-wrapper select {
+        width: 100%;
+        padding: 11px 14px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        font-size: 14px;
+        transition: border-color .2s, box-shadow .2s;
+    }
 
-    {{-- KOTA --}}
-    <select name="city_id" id="city" required>
-        <option value="">Pilih Kota</option>
-    </select>
+    .address-edit-wrapper input:focus,
+    .address-edit-wrapper textarea:focus,
+    .address-edit-wrapper select:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+    }
 
-    {{-- KECAMATAN --}}
-    <select name="district_id" id="district" required>
-        <option value="">Pilih Kecamatan</option>
-    </select>
+    .address-edit-wrapper textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
 
-    {{-- KELURAHAN --}}
-    <select name="village_id" id="village" required>
-        <option value="">Pilih Kelurahan</option>
-    </select>
+    .address-edit-wrapper button {
+        width: 100%;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+    }
 
-    <button type="submit">Update Alamat</button>
-</form>
+    .address-edit-wrapper button:hover {
+        background: #1e40af;
+    }
+</style>
+
+<div class="address-page">
+    <div class="address-edit-wrapper">
+
+        <form action="/addresses/{{ $address->id }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <input type="text" name="label" value="{{ $address->label }}" required>
+
+            <input type="text" name="recipient_name" value="{{ $address->recipient_name }}" required>
+
+            <input type="text" name="phone_number" value="{{ $address->phone_number }}" required>
+
+            <textarea name="address_detail" required>{{ $address->address_detail }}</textarea>
+
+            {{-- PROVINSI --}}
+            <select name="province_id" id="province" required>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->code }}"
+                        {{ $province->code == $address->province_id ? 'selected' : '' }}>
+                        {{ $province->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            {{-- KOTA --}}
+            <select name="city_id" id="city" required>
+                <option value="">Pilih Kota</option>
+            </select>
+
+            {{-- KECAMATAN --}}
+            <select name="district_id" id="district" required>
+                <option value="">Pilih Kecamatan</option>
+            </select>
+
+            {{-- KELURAHAN --}}
+            <select name="village_id" id="village" required>
+                <option value="">Pilih Kelurahan</option>
+            </select>
+
+            <button type="submit">💾 Update Alamat</button>
+        </form>
+
+    </div>
+</div>
 
 <script>
 const province  = document.getElementById('province');
@@ -126,3 +195,4 @@ district.addEventListener('change', () => {
     loadVillages(district.value);
 });
 </script>
+    

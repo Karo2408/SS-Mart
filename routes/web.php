@@ -109,11 +109,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index']);
     Route::post('/cart/add/{product}', [CartController::class, 'add']);
     Route::delete('/cart/{id}', [CartController::class, 'remove']);
+    Route::post('/cart/{item}/increase', [CartController::class, 'increase']);
+    Route::post('/cart/{item}/decrease', [CartController::class, 'decrease']);
 
     Route::get('/addresses', [CustomerAddressController::class, 'index']);
     Route::get('/addresses/create', [CustomerAddressController::class, 'create']);
     Route::post('/addresses', [CustomerAddressController::class, 'store']);
     Route::get('/addresses/{id}/edit', [CustomerAddressController::class, 'edit'])->name('addresses.edit');
     Route::put('/addresses/{id}', [CustomerAddressController::class, 'update'])->name('addresses.update');
+    Route::delete('/addresses/{id}', [CustomerAddressController::class, 'destroy'])->name('addresses.destroy');
     Route::put('/addresses/{id}/default', [CustomerAddressController::class, 'setDefault'])->name('addresses.default')->middleware('auth');
 });

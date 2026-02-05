@@ -17,8 +17,8 @@ class CartController extends Controller
         ]);
 
         $items = CartItem::with('product')
-                    ->where('cart_id', $cart->id)
-                    ->get();
+            ->where('cart_id', $cart->id)
+            ->get();
 
         return view('cart.index', compact('items'));
     }
@@ -30,8 +30,8 @@ class CartController extends Controller
         ]);
 
         $item = CartItem::where('cart_id', $cart->id)
-                        ->where('product_id', $product_id)
-                        ->first();
+            ->where('product_id', $product_id)
+            ->first();
 
         if ($item) {
             $item->qty += 1;
@@ -45,6 +45,30 @@ class CartController extends Controller
         }
 
         return redirect('/cart');
+    }
+
+    public function increase($id)
+    {
+        $item = CartItem::findOrFail($id);
+        $item->qty += 1;
+        $item->save();
+
+        return back();
+    }
+
+    public function decrease($id)
+    {
+        $item = CartItem::findOrFail($id);
+
+        if ($item->qty > 1) {
+            $item->qty -= 1;
+            $item->save();
+        } else {
+            // kalau qty = 1, hapus item
+            $item->delete();
+        }
+
+        return back();
     }
 
     public function remove($id)

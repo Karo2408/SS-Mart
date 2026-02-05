@@ -123,6 +123,23 @@ class CustomerAddressController extends Controller
         return redirect('/addresses')->with('success', 'Alamat berhasil diperbarui');
     }
 
+    public function destroy($id)
+    {
+        $address = CustomerAddress::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // 🚫 jangan izinkan hapus alamat default
+        if ($address->is_default) {
+            return back()->with('error', 'Alamat default tidak bisa dihapus');
+        }
+
+        $address->delete();
+
+        return back()->with('success', 'Alamat berhasil dihapus');
+    }
+
+
     public function setDefault($id)
     {
         DB::transaction(function () use ($id) {
