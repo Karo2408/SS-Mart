@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    // LIHAT CART
     public function index()
     {
         $cart = Cart::firstOrCreate([
@@ -20,9 +21,10 @@ class CartController extends Controller
             ->where('cart_id', $cart->id)
             ->get();
 
-        return view('cart.index', compact('items'));
+        return view('customer.cart.index', compact('items'));
     }
 
+    // TAMBAH KE CART
     public function add(Request $request, $product_id)
     {
         $cart = Cart::firstOrCreate([
@@ -34,8 +36,7 @@ class CartController extends Controller
             ->first();
 
         if ($item) {
-            $item->qty += 1;
-            $item->save();
+            $item->increment('qty');
         } else {
             CartItem::create([
                 'cart_id' => $cart->id,
@@ -44,36 +45,52 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect('/cart');
+        return redirect()->route('customer.cart.index');
     }
 
+    // TAMBAH QTY
     public function increase($id)
     {
-        $item = CartItem::findOrFail($id);
-        $item->qty += 1;
-        $item->save();
+        $item = CartItem::where('id', $id)
+            ->whereHas('cart', function ($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->firstOrFail();
+
+        $item->increment('qty');
 
         return back();
     }
 
+    // KURANGI QTY
     public function decrease($id)
     {
-        $item = CartItem::findOrFail($id);
+        $item = CartItem::where('id', $id)
+            ->whereHas('cart', function ($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->firstOrFail();
 
         if ($item->qty > 1) {
-            $item->qty -= 1;
-            $item->save();
+            $item->decrement('qty');
         } else {
-            // kalau qty = 1, hapus item
             $item->delete();
         }
 
         return back();
     }
 
+    // HAPUS ITEM
     public function remove($id)
     {
-        CartItem::findOrFail($id)->delete();
-        return redirect('/cart');
+        $item = CartItem::where('id', $id)
+            ->whereHas('cart', function ($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->firstOrFail();
+
+        $item->delete();
+
+        return back();
     }
 }

@@ -89,7 +89,7 @@
 <div class="container">
     <h2>📂 Data Categories</h2>
 
-    <a href="/categories/create" class="btn-add">
+    <a href="/admin/categories/create" class="btn-add">
         + Tambah Category
     </a>
 
@@ -108,11 +108,11 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $cat->nama_kategori }}</td>
                 <td class="aksi">
-                    <a href="/categories/{{ $cat->id }}/edit" class="btn-edit">
+                    <a href="/admin/categories/{{ $cat->id }}/edit" class="btn-edit">
                         Edit
                     </a>
 
-                    <form action="/categories/{{ $cat->id }}" method="POST">
+                    <form action="/admin/categories/{{ $cat->id }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit"

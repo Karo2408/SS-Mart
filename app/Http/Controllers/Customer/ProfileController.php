@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,33 +13,36 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * FORM PROFILE
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('customer.profile.edit', [
             'user' => $request->user(),
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * UPDATE PROFILE
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // reset verifikasi kalau email berubah
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('customer.profile.edit')
+            ->with('success', 'Profil berhasil diperbarui');
     }
 
     /**
-     * Delete the user's account.
+     * HAPUS AKUN
      */
     public function destroy(Request $request): RedirectResponse
     {
@@ -49,7 +53,6 @@ class ProfileController extends Controller
         $user = $request->user();
 
         Auth::logout();
-
         $user->delete();
 
         $request->session()->invalidate();
